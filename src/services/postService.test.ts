@@ -1,4 +1,4 @@
-import { getUsers } from "./userService";
+import { getPostById } from './postService';
 
 const mockedSuccessResponse = '::mockedSuccessResponse::';
 const mockedFetch = {
@@ -13,10 +13,11 @@ afterEach(() => {
     jest.clearAllMocks();
 });
 
-describe('getUsers', () => {
-    test('should call getUsers and return users', async () => {
+describe('getPostById', () => {
+    test('should call getPostById and return users', async () => {
+        const postId = '::postId::';
         (global.fetch as jest.Mock).mockImplementation(() => Promise.resolve(mockedFetch));
-        const fetchCall = await getUsers();
+        const fetchCall = await getPostById(postId);
         expect(global.fetch).toHaveBeenCalledTimes(1);
         expect(fetchCall).toEqual(mockedSuccessResponse);
     });
