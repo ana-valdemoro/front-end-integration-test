@@ -13,9 +13,7 @@ import { Post } from "./Post";
 
 afterEach(() => {
 
-    (getPostById as jest.Mock).mockReset();
-    // (useParams as jest.Mock).mockReset();
-
+    (getPostById as jest.Mock).mockClear();
 });
 
 
@@ -122,6 +120,15 @@ describe('PostComponent', () => {
 
             expect(screen.getByText(`Post`)).toBeInTheDocument();
             expect(screen.getByText("Loading...")).toBeInTheDocument();
+        });
+
+        test("Should not render post when It isn't found", async () => {
+            (useParams as jest.Mock).mockReturnValue({ id: "2342342" });
+            (getPostById as jest.Mock).mockRejectedValueOnce(new Error('Async error message'));
+
+            await act(async () => render(<BrowserRouter><Post /></BrowserRouter>) as any);
+
+            expect(screen.getByText(`Error happened`)).toBeInTheDocument();
         });
 
 

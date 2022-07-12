@@ -5,6 +5,7 @@ import { getPostById } from '../../services/postService';
 export const Post = (): JSX.Element => {
   const { id } = useParams();
   const [post, setPost] = useState<any>();
+  const [error, setError] = useState<any>(false);
 
 
   useEffect(() => {
@@ -14,7 +15,7 @@ export const Post = (): JSX.Element => {
         try {
           responsePost = await getPostById(id);
         } catch (error) {
-          console.log('petaaaaa');
+          setError(true);
         }
         if (responsePost) {
           setPost(responsePost)
@@ -24,11 +25,14 @@ export const Post = (): JSX.Element => {
     }
     return function cleanup() {
       setPost(null);
+      setError(false);
     };
 
   }, [id]);
 
-
+  if (error) {
+    return (<h1>Error happened</h1>);
+  }
 
   return (
     <div>
