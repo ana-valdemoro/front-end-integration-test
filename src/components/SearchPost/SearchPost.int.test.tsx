@@ -47,7 +47,7 @@ test("Can search for a post using its ID", async () => {
   expect(screen.getByText(mockPost.body)).toBeInTheDocument();
 });
 
-test.skip('should not render anything if router does not exists', async () => {
+test.skip('should not render anything if post does not exists', async () => {
   const mockPost2 = {
     id: "abcde",
     title: "Post Title",
