@@ -4,13 +4,19 @@ import { getUsers } from '../../services/userService';
 
 export const UserList = () => {
   const [people, setPeople] = useState<undefined | object[]>(undefined);
-
+  
   useEffect(() => {
-    const asyncFunction = async () => setPeople(await getUsers())
+    
+    const asyncFunction = async () => {
+      const usersList = await getUsers();
+      console.log(usersList + " prueba");
+      setPeople(usersList);
+    } 
     asyncFunction()
   }, []);
 
   if (!people) {
+    console.log(people +" hola")
     return null;
   }
 

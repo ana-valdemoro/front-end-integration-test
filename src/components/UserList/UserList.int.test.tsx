@@ -1,27 +1,50 @@
-import { render, screen, act, fireEvent } from "@testing-library/react";
-import { Routes, Route, MemoryRouter } from "react-router-dom";
+import { render, screen, act, fireEvent, waitFor } from "@testing-library/react";
+import { Routes, Route, MemoryRouter, BrowserRouter } from "react-router-dom";
 import { UserList } from "./UserList";
+import user from "@testing-library/user-event";
 import { getUsers } from "../../services/userService";
 import { Button } from "../Button/Button";
 
-const memoryRouter = (
-  <MemoryRouter initialEntries={[`/users`]}>
+const browserRouter = (
+  <BrowserRouter>
     <Routes>
       <Route path="/users" element={<UserList />} />
     </Routes>
-  </MemoryRouter>
+  </BrowserRouter>
 );
 
-describe("", () => {
-  it("Should render component", async () => {
-    await act(async () => render(memoryRouter) as any);
+beforeAll(() => {
+  window.history.pushState({}, 'Post detail', '/users');
+})
 
-    expect(getUsers).toHaveBeenCalledTimes(1);
+describe("Should render a component", () => {
+  it("Should render component", async () => {
+    await act(async () => render(browserRouter) as any);
+    // eslint-disable-next-line testing-library/prefer-find-by
+    await waitFor(() => screen.getAllByRole("listitem")[0]);
+    
     expect(screen.getByRole("list")).toBeInTheDocument();
-    expect(screen.getAllByRole("listitem")).toHaveLength(3);
+    expect(screen.getAllByRole("listitem").length).toBeGreaterThan(0);
     expect(screen.getByText("Add")).toBeInTheDocument();
   });
 });
+
+describe("Test Button", () => {
+
+  it("Should check the button add a new user when clicked", async() => {
+    await act(async () => render(browserRouter) as any);
+
+    await waitFor(() => screen.getAllByRole("listitem")[0]);
+
+    const numberOfUsers = screen.getAllByRole("listitem").length;
+    const button = screen.getByText("Add");
+    user.click(button);
+    
+    expect(screen.getAllByRole("listitem").length).toBe(numberOfUsers +1);
+
+  })
+
+})
 
 // it("should check could click on Button", async () => {
 //     await act(async () => render(<UserList />) as any);
